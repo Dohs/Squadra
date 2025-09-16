@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Service de l'application Squadra
+  squadra-webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Port HTTP
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=squadra-db;Port=5432;Database=Squadra;Username=postgres;Password=root
+    depends_on:
+      - squadra-db
+    networks:
+      - squadra-network
+
+  # Service de la base de données PostgreSQL
+  squadra-db:
+    image: postgres:15
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=Squadra
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - squadra-network
+
+# Volumes pour la persistance des données
+volumes:
+  postgres_data:
+
+# Réseau pour la communication entre les services
+networks:
+  squadra-network:
+    driver: bridge

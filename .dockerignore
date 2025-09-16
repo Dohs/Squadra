@@ -1,0 +1,14 @@
+**/.dockerignore
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/Properties
+**/publish
+**/wwwroot/dist
+.git
+.gitignore
+.vs
+.vscode
+Dockerfile
+README.md

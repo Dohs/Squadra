@@ -1,0 +1,46 @@
+# Fichiers et dossiers spécifiques à l'utilisateur et à l'IDE
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# Dossiers de build
+[Bb]in/
+[Oo]bj/
+
+# Fichiers générés par .NET
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+# Fichiers de publication
+[Pp]ublish/
+[Rr]elease/
+
+# Dépendances NuGet
+packages/
+*.nupkg
+
+# Fichiers de log et de test
+*.log
+*.log.*
+*.testlog
+TestResults/
+
+# Fichiers de configuration locaux (à décommenter si nécessaire)
+# appsettings.Development.json
+
+# Données Docker
+postgres_data/
+
+# Fichiers système
+[Tt]humbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Fichiers de cache
+*.cache
