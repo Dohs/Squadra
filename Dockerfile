@@ -13,8 +13,8 @@ RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # Copier les fichiers projet et la solution, puis restaurer les dépendances
-COPY ["Squadra/Squadra.csproj", "Squadra/"]
-COPY ["Squadra.Tests/Squadra.Tests.csproj", "Squadra.Tests/"]
+COPY ["WebApi/WebApi.csproj", "WebApi/"]
+COPY ["WebApi.Tests/WebApi.Tests.csproj", "WebApi.Tests/"]
 COPY ["projet.sln", "."]
 RUN dotnet restore "./projet.sln"
 
@@ -22,15 +22,15 @@ RUN dotnet restore "./projet.sln"
 COPY . .
 
 # Construire le projet principal
-WORKDIR "/src/Squadra"
-RUN dotnet build "Squadra.csproj" -c Release -o /app/build
+WORKDIR "/src/WebApi"
+RUN dotnet build "WebApi.csproj" -c Release -o /app/build
 
 # Étape 3: Publish - Publier l'application
 FROM build AS publish
-RUN dotnet publish "Squadra.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Étape 4: Final - Créer l'image finale à partir de l'image de publication (qui contient le SDK)
 FROM publish AS final
 WORKDIR /app/publish
-ENTRYPOINT ["dotnet", "Squadra.dll"]
+ENTRYPOINT ["dotnet", "WebApi.dll"]
 
