@@ -1,10 +1,9 @@
-# Étape 1: Base - Utilise l'image runtime ASP.NET Core
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# Étape 1: Base pour WebApi - Utilise l'image runtime ASP.NET Core
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base-webapi
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
 
-# Étape 2: Build - Utilise l'image SDK pour construire le projet
+# Étape 2: Build - Utilise l'image SDK pour construire les projets
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -16,30 +15,36 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 COPY ["WebApi/WebApi.csproj", "WebApi/"]
 COPY ["WebApi.Tests/WebApi.Tests.csproj", "WebApi.Tests/"]
 COPY ["Squadra.UI/Squadra.UI.csproj", "Squadra.UI/"]
-
 COPY ["projet.sln", "."]
 RUN dotnet restore "./projet.sln"
 
 # Copier tout le reste du code source
 COPY . .
 
-# Construire le projet principal
+# Construire les projets
 WORKDIR "/src/WebApi"
-RUN dotnet build "WebApi.csproj" -c Release -o /app/build
+RUN dotnet build "WebApi.csproj" -c Release -o /app/build/webapi
 
 WORKDIR "/src/Squadra.UI"
-RUN dotnet build "Squadra.UI.csproj" -c Release -o /app/build
+RUN dotnet build "Squadra.UI.csproj" -c Release -o /app/build/squadra-ui
 
-# Étape 3: Publish - Publier l'application
+# Étape 3: Publish - Publier les applications
 FROM build AS publish
-RUN dotnet publish "WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src/WebApi"
+RUN dotnet publish "WebApi.csproj" -c Release -o /app/publish/webapi /p:UseAppHost=false
 
-FROM build AS publish
-RUN dotnet publish "Squadra.UI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src/Squadra.UI"
+RUN dotnet publish "Squadra.UI.csproj" -c Release -o /app/publish/squadra-ui
 
-
-# Étape 4: Final - Créer l'image finale à partir de l'image de publication (qui contient le SDK)
-FROM publish AS final
-WORKDIR /app/publish
+# Étape 4: Final pour WebApi - Créer l'image finale pour WebApi
+FROM base-webapi AS squadra-webapi
+WORKDIR /app
+COPY --from=publish /app/publish/webapi .
 ENTRYPOINT ["dotnet", "WebApi.dll"]
 
+# Étape 5: Final pour Squadra.UI - Utiliser Nginx pour servir les fichiers statiques de Blazor WebAssembly
+FROM nginx:1.27-alpine AS squadra-ui
+COPY --from=publish /app/publish/squadra-ui/wwwroot /usr/share/nginx/html
+# Copier la configuration Nginx dans le répertoire conf.d pour qu'elle soit incluse par le fichier principal
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
