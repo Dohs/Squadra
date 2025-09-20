@@ -1,0 +1,29 @@
+@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="bg-white shadow-lg rounded-lg p-8 text-center max-w-md w-full">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Bienvenue sur Squadra !</h1>
+        <p class="text-lg text-gray-600 mb-6">Trouvez et organisez vos matchs de sport préférés.</p>
+
+        <AuthorizeView>
+            <Authorized>
+                <p class="text-xl text-blue-600 font-semibold mb-4">Bonjour, @context.User.Identity?.Name !</p>
+                <button @onclick='() => NavigationManager.NavigateTo("/matches")' class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold transition duration-200">
+                    Voir les matchs
+                </button>
+            </Authorized>
+            <NotAuthorized>
+                <div class="space-y-4">
+                    <button @onclick='() => NavigationManager.NavigateTo("/register")' class="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 text-lg font-semibold transition duration-200">
+                        S'inscrire
+                    </button>
+                    <button @onclick='() => NavigationManager.NavigateTo("/login")' class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold transition duration-200">
+                        Se connecter
+                    </button>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>

@@ -15,6 +15,8 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 # Copier les fichiers projet et la solution, puis restaurer les dépendances
 COPY ["WebApi/WebApi.csproj", "WebApi/"]
 COPY ["WebApi.Tests/WebApi.Tests.csproj", "WebApi.Tests/"]
+COPY ["Squadra.UI/Squadra.UI.csproj", "Squadra.UI/"]
+
 COPY ["projet.sln", "."]
 RUN dotnet restore "./projet.sln"
 
@@ -25,9 +27,16 @@ COPY . .
 WORKDIR "/src/WebApi"
 RUN dotnet build "WebApi.csproj" -c Release -o /app/build
 
+WORKDIR "/src/Squadra.UI"
+RUN dotnet build "Squadra.UI.csproj" -c Release -o /app/build
+
 # Étape 3: Publish - Publier l'application
 FROM build AS publish
 RUN dotnet publish "WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM build AS publish
+RUN dotnet publish "Squadra.UI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
 
 # Étape 4: Final - Créer l'image finale à partir de l'image de publication (qui contient le SDK)
 FROM publish AS final

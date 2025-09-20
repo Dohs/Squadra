@@ -1,0 +1,64 @@
+@inject IAuthService AuthService
+
+<div class="navbar-container flex items-center justify-between p-4 bg-white shadow-md">
+    <!-- Left section: Logo -->
+    <div class="navbar-left flex items-center">
+        <a href="/" class="text-2xl font-bold text-gray-800">Squadra.UI</a>
+    </div>
+
+    <!-- Middle section: Main Navigation -->
+    <nav class="navbar-center flex space-x-6">
+        <NavLink href="" class="text-gray-600 hover:text-blue-600 font-medium" Match="NavLinkMatch.All">Accueil</NavLink>
+        <NavLink href="matches" class="text-gray-600 hover:text-blue-600 font-medium">Matches</NavLink>
+        <NavLink href="sports" class="text-gray-600 hover:text-blue-600 font-medium">Sports</NavLink>
+    </nav>
+
+    <!-- Right section: User Actions -->
+    <div class="navbar-right flex items-center space-x-4">
+        <AuthorizeView>
+            <Authorized>
+                <NavLink href="profile" class="text-gray-600 hover:text-blue-600 font-medium">Profil</NavLink>
+                <button @onclick="Logout" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">Déconnexion</button>
+            </Authorized>
+            <NotAuthorized>
+                <NavLink href="login" class="text-gray-600 hover:text-blue-600 font-medium">Se connecter</NavLink>
+                <NavLink href="register" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">S'inscrire</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+@* <div class="navbar-container flex items-center justify-between p-4 bg-white shadow-md">
+    <!-- Left section: Logo -->
+    <div class="navbar-left flex items-center">
+        <a href="/" class="text-2xl font-bold text-gray-800">Squadra.UI</a>
+    </div>
+
+    <!-- Middle section: Main Navigation -->
+    <nav class="navbar-center flex space-x-6">
+        <NavLink href="" class="text-gray-600 hover:text-blue-600 font-medium" Match="NavLinkMatch.All">Accueil</NavLink>
+        <NavLink href="matches" class="text-gray-600 hover:text-blue-600 font-medium">Matches</NavLink>
+        <NavLink href="sports" class="text-gray-600 hover:text-blue-600 font-medium">Sports</NavLink>
+    </nav>
+
+    <!-- Right section: User Actions -->
+    <div class="navbar-right flex items-center space-x-4">
+        <AuthorizeView>
+            <Authorized>
+                <NavLink href="profile" class="text-gray-600 hover:text-blue-600 font-medium">Profil</NavLink>
+                <button @onclick="Logout" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">Déconnexion</button>
+            </Authorized>
+            <NotAuthorized>
+                <NavLink href="login" class="text-gray-600 hover:text-blue-600 font-medium">Se connecter</NavLink>
+                <NavLink href="register" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">S'inscrire</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div> *@
+
+@code {
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+    }
+}
